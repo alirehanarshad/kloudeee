@@ -1,0 +1,978 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap');
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(125, 211, 252, 0.35);
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.6);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(125, 211, 252, 0.18) transparent;
+}
+
+:root {
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --bg-page: #06111f;
+  --bg-panel: rgba(10, 23, 40, 0.56);
+  --bg-panel-strong: rgba(11, 24, 42, 0.74);
+  --bg-panel-soft: rgba(255, 255, 255, 0.06);
+  --line: rgba(148, 198, 255, 0.15);
+  --line-strong: rgba(125, 211, 252, 0.28);
+  --text-primary: #f4f8ff;
+  --text-secondary: rgba(226, 240, 255, 0.84);
+  --text-muted: rgba(184, 205, 229, 0.6);
+  --primary: #5ad0ff;
+  --primary-strong: #38bdf8;
+  --primary-soft: rgba(90, 208, 255, 0.14);
+  --primary-glow: rgba(56, 189, 248, 0.34);
+  --shadow-lg: 0 28px 80px rgba(1, 7, 18, 0.55);
+  --shadow-md: 0 18px 44px rgba(1, 7, 18, 0.34);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at 18% 20%, rgba(14, 165, 233, 0.2), transparent 28%),
+    radial-gradient(circle at 78% 18%, rgba(96, 165, 250, 0.18), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.12), transparent 36%),
+    linear-gradient(135deg, #040b16 0%, #071728 38%, #03101d 100%);
+}
+
+.kloude-app {
+  position: relative;
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.kloude-app::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, black 42%, transparent 92%);
+  pointer-events: none;
+  opacity: 0.22;
+  z-index: 0;
+}
+
+.kloude-orb-bg {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.95;
+  z-index: 0;
+  filter: saturate(1.08) contrast(1.08);
+}
+
+.kloude-sidebar {
+  position: relative;
+  z-index: 3;
+  width: 272px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(7, 20, 35, 0.86), rgba(5, 16, 29, 0.68));
+  border-right: 1px solid rgba(148, 198, 255, 0.11);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.03);
+  transition: width 0.28s ease;
+}
+
+.kloude-sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(125, 211, 252, 0.12), transparent 14%, transparent 84%, rgba(14, 165, 233, 0.12));
+  pointer-events: none;
+}
+
+.kloude-sidebar.collapsed { width: 74px; }
+
+.kloude-sidebar-top,
+.kloude-sidebar-bottom {
+  position: relative;
+  z-index: 1;
+  padding: 18px 14px;
+}
+
+.kloude-sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.kloude-sidebar-toggle,
+.kloude-new-chat-btn,
+.kloude-session-btn {
+  font: inherit;
+}
+
+.kloude-sidebar-toggle {
+  width: 42px;
+  height: 42px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.kloude-sidebar-toggle:hover {
+  background: rgba(90, 208, 255, 0.08);
+  border-color: rgba(125, 211, 252, 0.12);
+  color: white;
+}
+
+.kloude-new-chat-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 1px solid rgba(125, 211, 252, 0.16);
+  border-radius: 16px;
+  color: white;
+  background:
+    linear-gradient(135deg, rgba(92, 214, 255, 0.14), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 28px rgba(2, 8, 23, 0.2);
+  cursor: pointer;
+  transition: 220ms ease;
+}
+
+.kloude-sidebar.collapsed .kloude-new-chat-btn {
+  justify-content: center;
+  padding-inline: 0;
+}
+
+.kloude-new-chat-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(56, 189, 248, 0.18);
+  border-color: rgba(125, 211, 252, 0.3);
+}
+
+.kloude-sidebar-sessions {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kloude-sidebar-label {
+  padding: 8px 10px 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.kloude-sidebar-empty {
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 10px;
+}
+
+.kloude-session-row {
+  position: relative;
+}
+
+.kloude-session-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--text-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition: 180ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.kloude-session-btn span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kloude-session-btn:hover {
+  background: rgba(90, 208, 255, 0.07);
+  border-color: rgba(125, 211, 252, 0.09);
+}
+
+.kloude-session-btn.active {
+  background: linear-gradient(135deg, rgba(90, 208, 255, 0.14), rgba(255, 255, 255, 0.05));
+  border-color: rgba(125, 211, 252, 0.18);
+  color: white;
+}
+
+.kloude-session-menu-trigger {
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: -4px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.kloude-session-btn:hover .kloude-session-menu-trigger,
+.kloude-session-menu-trigger:hover {
+  opacity: 1;
+}
+
+.kloude-session-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.kloude-pin-indicator {
+  color: var(--primary);
+  filter: drop-shadow(0 0 4px var(--primary-glow));
+  flex-shrink: 0;
+}
+
+.kloude-session-menu {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 12px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  min-width: 140px;
+  background: rgba(11, 24, 42, 0.94);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  animation: kloudeMenuFade 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes kloudeMenuFade {
+  from { opacity: 0; transform: translateY(-4px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.kloude-session-menu button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: 150ms ease;
+}
+
+.kloude-session-menu button:hover {
+  background: rgba(90, 208, 255, 0.12);
+  color: white;
+}
+
+.kloude-session-menu button.delete-opt:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+}
+
+.kloude-session-rename-box {
+  padding: 4px;
+}
+
+.kloude-rename-input {
+  width: 100%;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--primary-soft);
+  border-radius: 10px;
+  color: white;
+  outline: none;
+  font-size: 13px;
+}
+
+.kloude-rename-input:focus {
+  border-color: var(--primary-strong);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+
+.kloude-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  color: rgba(241, 245, 249, 0.86);
+  font-weight: 700;
+}
+
+.kloude-main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 24px 24px;
+}
+
+.kloude-chat-shell {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(7, 21, 36, 0.72), rgba(5, 16, 29, 0.62)),
+    radial-gradient(circle at top, rgba(125, 211, 252, 0.08), transparent 40%);
+  border: 1px solid rgba(148, 198, 255, 0.12);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+}
+
+.kloude-chat-shell::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 29px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  pointer-events: none;
+}
+
+.kloude-stage-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.kloude-stage-grid {
+  position: absolute;
+  inset: auto 0 -12%;
+  height: 52%;
+  background:
+    linear-gradient(rgba(125, 211, 252, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.1) 1px, transparent 1px);
+  background-size: 54px 54px;
+  transform: perspective(760px) rotateX(76deg);
+  transform-origin: bottom;
+  opacity: 0.22;
+  mask-image: linear-gradient(180deg, transparent, black 30%, black 70%, transparent);
+}
+
+.kloude-stage-beam {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34vw;
+  min-width: 240px;
+  filter: blur(14px);
+  opacity: 0.28;
+  background: linear-gradient(180deg, rgba(96, 165, 250, 0), rgba(96, 165, 250, 0.28), rgba(96, 165, 250, 0));
+  transform: skewX(-20deg) translateX(-26%);
+}
+
+.kloude-stage-beam.beam-right {
+  left: auto;
+  right: 0;
+  transform: skewX(20deg) translateX(26%);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0), rgba(56, 189, 248, 0.26), rgba(56, 189, 248, 0));
+}
+
+
+
+.kloude-chat-page {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 0 28px;
+}
+
+.kloude-chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 34px 0 24px;
+}
+
+.kloude-chat-welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 42px 0 48px;
+}
+
+.kloude-welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, rgba(90, 208, 255, 0.18), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(125, 211, 252, 0.18);
+  box-shadow: 0 24px 60px rgba(56, 189, 248, 0.2);
+  animation: kloudeFloat 5.2s ease-in-out infinite;
+}
+
+@keyframes kloudeFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-2deg); }
+  50% { transform: translate3d(0, -10px, 0) rotate(2deg); }
+}
+
+
+
+.kloude-welcome-title {
+  margin: 0;
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  max-width: 700px;
+  background: linear-gradient(180deg, #ffffff 0%, #d7f1ff 42%, #7dd3fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 18px 60px rgba(56, 189, 248, 0.18);
+}
+
+.kloude-welcome-sub {
+  margin: 0;
+  max-width: 620px;
+  color: var(--text-secondary);
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+
+
+.kloude-suggestion-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: min(100%, 820px);
+  margin-top: 18px;
+}
+
+.kloude-suggestion-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --px: 50%;
+  --py: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  min-height: 122px;
+  padding: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(9, 22, 39, 0.7), rgba(8, 18, 32, 0.54)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(0);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.kloude-suggestion-card:hover {
+  border-color: rgba(125, 211, 252, 0.28);
+  box-shadow: 0 24px 56px rgba(56, 189, 248, 0.16);
+}
+
+.kloude-suggestion-sheen {
+  content: '';
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle at var(--px) var(--py), rgba(186, 230, 253, 0.22), transparent 26%);
+  opacity: 0;
+  transition: opacity 180ms ease;
+}
+
+.kloude-suggestion-card:hover .kloude-suggestion-sheen { opacity: 1; }
+
+
+
+.kloude-suggestion-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+
+
+.kloude-suggestion-text {
+  color: white;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.kloude-msg {
+  display: flex;
+  gap: 16px;
+  animation: msgFadeIn 0.35s ease both;
+}
+
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kloude-msg-user { justify-content: flex-end; }
+.kloude-msg-assistant { justify-content: flex-start; }
+
+.kloude-msg-avatar {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  margin-top: 6px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(90, 208, 255, 0.14), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  box-shadow: 0 12px 26px rgba(3, 9, 24, 0.28);
+}
+
+.kloude-msg-bubble {
+  max-width: min(82%, 760px);
+}
+
+.kloude-msg-user .kloude-msg-bubble {
+  padding: 16px 18px;
+  border-radius: 22px 22px 8px 22px;
+  background: linear-gradient(135deg, rgba(92, 214, 255, 0.14), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  box-shadow: 0 18px 40px rgba(3, 9, 24, 0.25);
+  color: white;
+  line-height: 1.65;
+}
+
+.kloude-msg-assistant .kloude-msg-bubble {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 18px 16px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(125, 211, 252, 0.08);
+}
+
+.kloude-thinking-dots {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.kloude-thinking-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 16px var(--primary-glow);
+  animation: kloudeDot 1.4s ease-in-out infinite both;
+}
+
+.kloude-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.kloude-thinking-dots span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes kloudeDot {
+  0%, 80%, 100% { transform: scale(0.55); opacity: 0.32; }
+  40% { transform: scale(1.16); opacity: 1; }
+}
+
+.kloude-markdown {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+
+.kloude-markdown > *:first-child { margin-top: 0; }
+.kloude-markdown > *:last-child { margin-bottom: 0; }
+
+.kloude-markdown h1,
+.kloude-markdown h2,
+.kloude-markdown h3,
+.kloude-markdown h4 {
+  color: white;
+  line-height: 1.25;
+  margin: 20px 0 10px;
+}
+
+.kloude-markdown p { margin: 8px 0; }
+.kloude-markdown strong { color: white; }
+.kloude-markdown em { color: rgba(220, 235, 255, 0.8); }
+.kloude-markdown a { color: #7dd3fc; text-decoration: none; }
+.kloude-markdown a:hover { text-decoration: underline; }
+.kloude-markdown ul,
+.kloude-markdown ol { padding-left: 22px; }
+.kloude-markdown li::marker { color: #7dd3fc; }
+
+.kloude-markdown code {
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.14);
+  background: rgba(125, 211, 252, 0.08);
+  color: #d7f1ff;
+  font-size: 13px;
+}
+
+.kloude-markdown pre {
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  background: rgba(2, 8, 20, 0.86);
+}
+
+.kloude-markdown pre code {
+  display: block;
+  padding: 18px 20px;
+  border: 0;
+  background: transparent;
+}
+
+.kloude-markdown blockquote {
+  margin: 14px 0;
+  padding: 14px 16px;
+  border-left: 3px solid rgba(125, 211, 252, 0.7);
+  border-radius: 0 14px 14px 0;
+  background: rgba(125, 211, 252, 0.05);
+}
+
+.kloude-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(125, 211, 252, 0.1);
+}
+
+.kloude-markdown th,
+.kloude-markdown td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(125, 211, 252, 0.08);
+}
+
+.kloude-composer-area {
+  position: relative;
+  z-index: 2;
+  padding: 12px 0 24px;
+  background: transparent;
+}
+
+.kloude-composer {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 14px 16px 14px 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 12px 34px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: all 260ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.kloude-composer:focus-within {
+  border-color: rgba(125, 211, 252, 0.24);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 
+    0 0 0 4px rgba(56, 189, 248, 0.08),
+    0 16px 48px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.kloude-composer-glow {
+  position: absolute;
+  inset: auto -10% -70%;
+  height: 140px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.24), transparent 62%);
+  pointer-events: none;
+}
+
+.kloude-composer-input {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 28px;
+  max-height: 200px;
+  border: 0;
+  outline: 0;
+  resize: none;
+  background: transparent;
+  color: white;
+  font: inherit;
+  line-height: 1.6;
+}
+
+.kloude-composer-input::placeholder {
+  color: rgba(197, 214, 234, 0.52);
+}
+
+.kloude-composer-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+
+
+.kloude-send-btn {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 14px;
+  color: #001421;
+  background: linear-gradient(180deg, #93e8ff 0%, #38bdf8 100%);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 4px 0 #0369a1,
+    0 8px 16px rgba(56, 189, 248, 0.3);
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateY(0);
+}
+
+.kloude-send-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, #b0efff 0%, #4cc8ff 100%);
+  box-shadow: 
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 1px 2px rgba(0, 0, 0, 0.15),
+    0 6px 0 #0284c7,
+    0 12px 24px rgba(56, 189, 248, 0.45);
+}
+
+.kloude-send-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.2) inset,
+    0 1px 0 #0284c7,
+    0 2px 4px rgba(56, 189, 248, 0.2);
+}
+
+.kloude-send-btn:disabled {
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
+.kloude-disclaimer {
+  margin-top: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.pulsing { animation: kloudePulse 1.8s infinite ease-in-out; }
+
+@keyframes kloudePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.42; }
+}
+
+.kloude-stop-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  height: 46px;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 200ms ease;
+  backdrop-filter: blur(8px);
+}
+
+.kloude-stop-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-1px);
+}
+
+.kloude-stop-btn:active {
+  transform: translateY(1px);
+}
+
+.kloude-stop-btn svg {
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.4));
+}
+
+.voltee-toast-host {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 20;
+  display: grid;
+  gap: 10px;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.voltee-toast {
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(125, 211, 252, 0.12);
+  background: rgba(7, 18, 31, 0.9);
+  color: white;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+}
+
+.voltee-toast.info { border-left: 4px solid #38bdf8; }
+.voltee-toast.success { border-left: 4px solid #34d399; }
+
+@media (max-width: 980px) {
+  .kloude-main { padding: 14px; }
+  .kloude-chat-page { padding: 0 18px; }
+
+}
+
+@media (max-width: 768px) {
+  .kloude-sidebar { display: none; }
+  .kloude-main { padding: 12px; }
+  .kloude-chat-shell { border-radius: 24px; }
+  .kloude-chat-page { padding: 0 14px; }
+  .kloude-suggestion-grid { grid-template-columns: 1fr; }
+  .kloude-welcome-title { font-size: clamp(34px, 12vw, 52px); }
+  .kloude-welcome-sub { font-size: 16px; }
+
+  .kloude-composer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .kloude-composer-actions {
+    justify-content: space-between;
+  }
+
+  .kloude-msg-bubble { max-width: 100%; }
+}
+
+.kloude-scroll-bottom-btn {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(14, 25, 45, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(125, 211, 252, 0.22);
+  color: var(--primary);
+  cursor: pointer;
+  box-shadow: 
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 0 0 rgba(56, 189, 248, 0) inset;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: kloudeScrollBtnIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes kloudeScrollBtnIn {
+  from { opacity: 0; transform: translate(-50%, 15px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.kloude-scroll-bottom-btn:hover {
+  background: rgba(20, 35, 60, 0.9);
+  border-color: var(--primary-strong);
+  color: white;
+  box-shadow: 0 14px 30px rgba(56, 189, 248, 0.22);
+  transform: translateX(-50%) translateY(-3px);
+}
+
+.kloude-scroll-bottom-btn:active {
+  transform: translateX(-50%) translateY(0);
+}
