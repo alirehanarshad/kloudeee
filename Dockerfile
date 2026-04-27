@@ -5,7 +5,10 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+# Cloud Build runs on Linux; if your lockfile was generated on Windows/macOS,
+# strict `npm ci` can miss platform-specific optional deps (e.g. Rollup native binary).
+# Using `npm install --include=optional` allows npm to resolve the correct Linux optional deps.
+RUN npm install --include=optional
 
 COPY . .
 RUN npm run build
