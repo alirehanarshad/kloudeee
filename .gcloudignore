@@ -1,0 +1,23 @@
+# Exclude dependencies and local env
+node_modules/
+.env
+.env.*
+
+# Build output (built inside Dockerfile)
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# VCS / OS
+.git/
+.DS_Store
+
+# Large local cloud configs (avoid uploading secrets/artifacts)
+aws.json
+azure.json
+gcp.json

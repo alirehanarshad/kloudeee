@@ -8,6 +8,7 @@
     "dev:backend": "node server/index.js",
     "dev:frontend": "vite",
     "build": "vite build",
+    "start": "node server/index.js",
     "preview": "vite preview"
   },
   "dependencies": {
