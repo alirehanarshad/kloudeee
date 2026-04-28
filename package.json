@@ -8,6 +8,7 @@
     "dev:backend": "node server/index.js",
     "dev:frontend": "vite",
     "build": "vite build",
+    "gcp-build": "npm run build",
     "start": "node server/index.js",
     "preview": "vite preview"
   },
@@ -32,5 +33,8 @@
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
     "vite": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
