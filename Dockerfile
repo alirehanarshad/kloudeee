@@ -4,11 +4,14 @@
 FROM node:20-slim AS deps
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# We only copy package.json to avoid lockfile conflicts during this phase
+COPY package.json ./
 
-# The --platform flag ensures we get the Linux binaries for Rollup/Vite
-# even if your lockfile was made on Windows/Mac
-RUN npm ci --include=optional --platform=linux --arch=x64
+# 1. Use 'npm install' instead of 'ci' to bypass the lockfile sync check.
+# 2. Specifically install the missing Linux rollup binary.
+# 3. Use --legacy-peer-deps to handle the React 19 / Radix UI conflicts.
+RUN npm install --legacy-peer-deps && \
+    npm install @rollup/rollup-linux-x64-gnu@4.60.1
 
 
 # --- Stage 2: Build ---
@@ -16,10 +19,11 @@ FROM node:20-slim AS build
 WORKDIR /app
 ENV NODE_ENV=production
 
+# Copy node_modules from the previous stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# This creates the /dist folder
+# Build the Vite frontend
 RUN npm run build
 
 
@@ -29,17 +33,17 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# Only copy what is strictly necessary to keep the image small
+# Keep the production image lean
 COPY package.json ./
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/server ./server
 
-# CRITICAL: Copy your AI logic files so the server can import them
+# Ensure your AI logic files are available for the Node.js server
 COPY --from=build /app/gemini.js ./
 COPY --from=build /app/groq.js ./
 
 EXPOSE 8080
 
-# Start the server
+# Run the server
 CMD ["node", "server/index.js"]
