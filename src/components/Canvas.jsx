@@ -132,7 +132,7 @@ export default function Canvas() {
   }, [setCanvasApi]);
 
   return (
-    <div className="excalidraw-host">
+    <div className="canvas-host">
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}

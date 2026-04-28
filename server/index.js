@@ -252,15 +252,15 @@ const server = http.createServer(async (req, res) => {
 server.on('error', (error) => {
   if (error && typeof error === 'object' && error.code === 'EADDRINUSE') {
     console.error(
-      `Voltee API port ${PORT} is already in use. Set PORT (example: PORT=8081) or stop the other process.`
+      `Kloudeee API port ${PORT} is already in use. Set PORT (example: PORT=8081) or stop the other process.`
     );
     process.exit(1);
   }
 
-  console.error('Voltee API server error:', error);
+  console.error('Kloudeee API server error:', error);
   process.exit(1);
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Voltee API listening on http://localhost:${PORT}`);
+  console.log(`Kloudeee API listening on http://localhost:${PORT}`);
 });
